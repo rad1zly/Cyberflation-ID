@@ -74,12 +74,17 @@ const SECTOR_DORKS: { sector: GamblingSite['sector']; tld: string; queries: stri
 ];
 
 const INJECTOR_DORKS = [
-  'site:.go.id "slot" OR "gacor" OR "casino"',
-  'site:.ac.id "slot" OR "gacor" OR "judol"',
-  'site:.sch.id "slot" OR "gacor" OR "casino"',
-  '"slot gacor" site:.go.id OR site:.ac.id OR site:.sch.id',
-  '"slot maxwin" "pemerintah" OR "kampus" OR "sekolah"',
-  '"kasino online" "pemerintah" OR "instansi"',
+  // Direct queries for gambling injector domains (.pro, .xyz, .icu TLDs with slot/gacor keywords)
+  'site:.pro "slot" OR "gacor" OR "maxwin"',
+  'site:.xyz "slot gacor" OR "slot" "maxwin"',
+  'site:.icu "slot gacor" OR "situs judol" OR "agen judol"',
+  'site:.top "slot gacor" OR "pragmatic play" OR "pgsoft"',
+  'site:.win "slot online" OR "casino online" "gacor"',
+  'site:.cc "slot gacor" OR "kakek zeus" OR "maxwin"',
+  '"slot gacor" site:.pro OR site:.xyz OR site:.icu OR site:.top',
+  '"situs slot" "terpercaya" site:.pro OR site:.xyz OR site:.icu',
+  '"agen slot" "gacor" "maxwin" site:.xyz OR site:.icu OR site:.pro',
+  '"pragmatic play" "slot" "gacor" OR "maxwin"',
 ];
 
 // Blocklist: legitimate domains that should never appear as "injector"
@@ -298,25 +303,6 @@ export async function getGamblingData(): Promise<GamblingDorkResult> {
       await delay(1200);
     }
 
-    // Supplement with known high-frequency injector domains (RondaJudol baseline)
-    // These are the most active gambling injector domains observed in Indonesia
-    const KNOWN_INJECTORS: [string, number, string][] = [
-      ['bos-spins-777.pro', 5710, 'slot'],
-      ['situs-judol-pemerintah.icu', 2568, 'slot'],
-      ['gacor-slots-88.net', 1094, 'gacor'],
-      ['kalibagor.pramukabanyumas.or.id', 256, 'slot'],
-      ['depo15k-maxwin.xyz', 252, 'gacor'],
-      ['pragmatic-play.top', 198, 'slot'],
-      ['kakek-zeus.icu', 187, 'game-specific'],
-      ['slot777-gacor.pro', 143, 'slot'],
-      ['maxwin2026.xyz', 129, 'gacor'],
-      ['casino-online.icu', 98, 'casino'],
-    ];
-    for (const [domain, freq, tag] of KNOWN_INJECTORS) {
-      if (!injectorDomains.has(domain)) {
-        injectorDomains.set(domain, freq);
-      }
-    }
     seenInjectors.clear();
     for (const [domain, freq] of injectorDomains) {
       seenInjectors.set(domain, freq);
@@ -338,15 +324,35 @@ export async function getGamblingData(): Promise<GamblingDorkResult> {
     const worstCount = sectorCounts[worstSectorName] || 0;
     const worstRatio = Math.round((worstCount / totalInfected) * 100);
 
-    // Top injector domains
+    // Top injector domains — tag inferred from domain name patterns
+    const INJECTOR_TAG_MAP: Record<string, string> = {
+      'gacor': 'gacor',
+      'maxwin': 'gacor',
+      'slot': 'slot',
+      'kakek': 'game-specific',
+      'zeus': 'game-specific',
+      'pragmatic': 'slot',
+      'pgsoft': 'slot',
+      'microgaming': 'slot',
+      'casino': 'casino',
+      'poker': 'poker',
+      'judol': 'judol',
+    };
+    function inferTag(domain: string): string {
+      const d = domain.toLowerCase();
+      for (const [kw, tag] of Object.entries(INJECTOR_TAG_MAP)) {
+        if (d.includes(kw)) return tag;
+      }
+      return 'slot';
+    }
     const topInjectorDomains = Array.from(seenInjectors.entries())
       .map(([domain, frequency]) => ({
         domain,
         frequency,
-        tag: aggregated.find(s => s.domain === domain)?.tags[0] || 'slot',
+        tag: inferTag(domain),
       }))
       .sort((a, b) => b.frequency - a.frequency)
-      .slice(0, 5);
+      .slice(0, 10);
 
     const result: GamblingDorkResult = {
       sites: aggregated.slice(0, 20),
