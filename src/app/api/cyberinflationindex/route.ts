@@ -212,7 +212,7 @@ export async function GET() {
     return NextResponse.json({
       index: cyberInflationIndex,
       trend,
-      status: cyberInflationIndex >= 75 ? 'critical' : cyberInflationIndex >= 55 ? 'high' : cyberInflationIndex >= 40 ? 'medium' : 'low',
+      status: cyberInflationIndex >= 71 ? 'critical' : cyberInflationIndex >= 51 ? 'high' : cyberInflationIndex >= 31 ? 'medium' : 'low',
       components: {
         incidentScore: Math.round(incidentScore),
         incidentVelocity: { current: weekIncidents, previous: prevWeekIncidents },
