@@ -92,7 +92,14 @@ function delay(ms: number) {
 function extractDomain(url: string): string {
   try {
     const u = new URL(url);
-    return u.hostname.replace(/^www\./, '');
+    let host = u.hostname.replace(/^www\./, '');
+    // Strip known CDN/proxy layers to get the real domain
+    host = host.replace(/\.b-cdn\.net$/, '')
+               .replace(/\.cloudflarenet\.com$/, '')
+               .replace(/\.akamaized\.net$/, '')
+               .replace(/\.cdn\.cloudflare\.com$/, '')
+               .replace(/^cdn\./, '');
+    return host;
   } catch {
     return url.replace(/^https?:\/\//, '').split('/')[0];
   }
@@ -129,7 +136,7 @@ function buildSerpApiUrl(apiKey: string, query: string, numResults = 10): string
     hl: 'id',       // Indonesian language
     filter: '0',    // no duplicate filter
   });
-  return `https:// serpapi.com/search?${params.toString()}`;
+  return `https://serpapi.com/search?${params.toString()}`;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
