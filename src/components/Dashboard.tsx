@@ -199,6 +199,18 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
     return 'var(--accent-yellow)';
   };
 
+  // Index-based status color: LOW=green, MEDIUM=yellow, HIGH=red, CRITICAL=red
+  const getIndexStatusStyle = (index: number) => {
+    if (index >= 71) return { bg: 'rgba(255,61,87,0.12)', text: '#ff3d57' };   // CRITICAL
+    if (index >= 51) return { bg: 'rgba(255,61,87,0.12)', text: '#ff3d57' };   // HIGH
+    if (index >= 31) return { bg: 'rgba(255,193,61,0.12)', text: 'var(--accent-yellow)' }; // MEDIUM
+    return { bg: 'rgba(0,200,83,0.1)', text: '#00c853' };                        // LOW
+  };
+  const getIndexValueStyle = (index: number) => {
+    if (index >= 31) return 'var(--accent-red)';
+    return '#00c853';
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Stats Row */}
@@ -223,8 +235,8 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
                 <span className="font-bold text-white">Cyber Inflation Index</span>
               </span>
               <span className="text-xs px-2 py-1 rounded-full font-semibold" style={{
-                background: cyberData && cyberData.index > 70 ? 'rgba(255,61,87,0.12)' : 'rgba(0,255,136,0.1)',
-                color: cyberData && cyberData.index > 70 ? 'var(--accent-red)' : 'var(--accent-green)',
+                background: cyberData ? getIndexStatusStyle(cyberData.index).bg : 'rgba(255,255,255,0.05)',
+                color: cyberData ? getIndexStatusStyle(cyberData.index).text : 'var(--text-muted)',
               }}>
                 {cyberData?.status.toUpperCase() || 'LOADING'}
               </span>
@@ -232,8 +244,8 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
 
             <div className="flex items-end gap-4 mb-4">
               <span
-                className="text-6xl font-black tracking-tight glow-green"
-                style={{ color: cyberData && cyberData.index > 70 ? 'var(--accent-red)' : 'var(--accent-green)' }}
+                className="text-6xl font-black tracking-tight"
+                style={{ color: cyberData ? getIndexValueStyle(cyberData.index) : 'var(--text-muted)' }}
               >
                 {loadingIndex ? '—' : (cyberData?.index || '—')}
               </span>
