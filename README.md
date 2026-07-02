@@ -234,7 +234,7 @@ cyberflation/
 
 | Source | Type | Coverage | Refresh |
 |--------|------|----------|---------|
-| **KEVin API** | CISA KEV exploits | Global + Indonesia-relevant | ~实时 |
+| **KEVin API** | CISA KEV exploits | Global + Indonesia-relevant | ~realtime |
 | **Shodan API** | Infrastructure exposure | Indonesia IP ranges | 1-hour cache |
 | **The Hacker News** | RSS feed | Global cyber news | 30-min cache |
 | **Krebs on Security** | RSS feed | Global cyber news | 30-min cache |

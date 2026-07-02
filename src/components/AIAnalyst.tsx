@@ -86,7 +86,7 @@ export default function AIAnalyst() {
       role: 'assistant',
       content: `Welcome to **AI Cyberflation Analyst** 👋
 
-I am the AI analyst for Cyberflation.ID platform. I analyze Indonesia cyber risk pressure data in real-time. I can help you with:
+This AI analyst monitors Indonesia cyber risk inflation in realtime. It can help with:
 
 • 📊 Per-sector risk analysis
 • 🔮 7-14 day cyber inflation forecast
