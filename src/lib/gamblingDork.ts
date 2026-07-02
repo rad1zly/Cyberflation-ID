@@ -282,7 +282,7 @@ export async function getGamblingData(): Promise<GamblingDorkResult> {
             allSites.push({ ...site, sector });
           }
         }
-        await delay(1200); // SerpAPI free tier: 1 req/sec max
+        await delay(800); // SerpAPI free tier: ~1 req/sec
       }
     }
 

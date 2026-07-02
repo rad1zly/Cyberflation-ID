@@ -3,6 +3,7 @@ import Database from 'better-sqlite3';
 import path from 'path';
 import { getShodanRiskScore } from '@/lib/shodan';
 import { computeNewsThreat } from '@/lib/newsThreat';
+import { getGamblingData } from '@/lib/gamblingDork';
 import { XMLParser } from 'fast-xml-parser';
 
 const KEVIN_BASE = 'https://kevin.gtfkd.com';
@@ -111,6 +112,18 @@ export async function GET() {
       }
     } catch { /* news unavailable */ }
 
+    // ── 3c. GAMBLING INJECTION (SerpAPI dorking) ───────────────────────────
+    let gamblingScore = 0;
+    let activeInfections = 0;
+    let totalInfected = 0;
+    try {
+      const gambleData = await getGamblingData();
+      totalInfected = gambleData.totalInfected || 0;
+      activeInfections = gambleData.activeInfections || 0;
+      // Score: normalize infected count to 0-100 (797 baseline = 100)
+      gamblingScore = Math.min(100, Math.round((activeInfections / 797) * 100));
+    } catch { /* gambling data unavailable */ }
+
     // ── 4. CYBER INFLATION INDEX COMPUTATION ─────────────────────────────
     // Baseline constants
     const BASELINE_INCIDENTS_WEEKLY = 180; // historical weekly average
@@ -158,13 +171,14 @@ export async function GET() {
     const severityWeight = Math.min(1.5, 0.5 + (avgCVSS / 10)); // 0.5 at CVSS 0, 1.5 at CVSS 10
 
     // ── 5. FINAL INDEX ──────────────────────────────────────────────────
-    // Weights: Incident=33%, KEV=27%, Shodan=20%, CVSS=15%, News=5%
+    // Weights: Incident=28%, KEV=22%, Shodan=18%, CVSS=12%, News=5%, Gambling=15%
     const rawIndex = (
-      (incidentScore * 0.33) +     // incident velocity
-      (kevScore * 0.27) +        // KEV velocity from CISA
-      (shodan.totalScore * 0.20) +  // Shodan infrastructure risk
-      ((avgCVSS / 10) * 100 * 0.15) + // CVSS severity
-      (normalizedNewsScore * 0.05)   // news threat intelligence
+      (incidentScore * 0.28) +       // incident velocity
+      (kevScore * 0.22) +        // KEV velocity from CISA
+      (shodan.totalScore * 0.18) +  // Shodan infrastructure risk
+      ((avgCVSS / 10) * 100 * 0.12) + // CVSS severity
+      (normalizedNewsScore * 0.05) +   // news threat intelligence
+      (gamblingScore * 0.15)          // gambling injection (SerpAPI dorking)
     ) * ransomwareModifier * severityWeight;
 
     const cyberInflationIndex = Math.round(Math.min(100, Math.max(0, rawIndex)));
@@ -224,6 +238,11 @@ export async function GET() {
         score: normalizedNewsScore,
         breachMentions: newsBreachMentions,
         ransomwareMentions: newsRansomwareMentions,
+      },
+      gambling: {
+        score: gamblingScore,
+        activeInfections,
+        totalInfected,
       },
       sectorBreakdown: sectorRows,
       severityBreakdown: severityRows,

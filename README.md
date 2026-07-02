@@ -21,13 +21,31 @@ Think of it like an **inflation index for cybersecurity threats** — when the i
 ## 🔍 Features
 
 ### Dashboard
-- **Cyber Inflation Index** (0–100) — computed daily from 5 live data sources
+- **Cyber Inflation Index** (0–100) — computed daily from 6 live data sources
 - **5-Factor Scoring Model**: Incident Velocity (33%) + KEV Exploits (27%) + Shodan Exposure (20%) + CVSS Severity (15%) + News Threat (5%)
 - **Weekly trend** (+/- change vs last week)
 - **Severity breakdown** and risk status label (LOW / MODERATE / HIGH / CRITICAL)
 - **Shodan Infrastructure Exposure** — live scan results for Indonesia (MongoDB, Redis, RDP, SMB, MySQL, Elasticsearch)
 - **KEV Exploits** — real-time CISA Known Exploited Vulnerabilities feed
 - **AI Threat Alerts** — auto-generated alerts when multiple threat vectors align
+
+### Online Gambling OSINT
+- **Google Dorking via SerpAPI** — automated scanning for gambling injection in Indonesian government & education websites
+- **5 Sector Coverage**: .go.id (Government), .ac.id (Academic), .sch.id (School), .or.id (Organization), .desa.id (Village)
+- **Top Injector Domains** — most active gambling domains used to inject Indonesian websites
+- **Sector Distribution** — Pie/Bar chart showing which sectors are most targeted
+- **VirusTotal + AbuseIPDB** links for every injector domain
+- **Source**: SerpAPI (100 free searches/month) · Falls back to cached data
+- **Stats**: Total infected (797), Active infections (765), Cleaned (32), Worst sector
+
+### Online Gambling OSINT
+- **Google Dorking via SerpAPI** — automated OSINT scanner for gambling injection in Indonesian government & education websites
+- **5 Sector Coverage**: .go.id (Government), .ac.id (Academic), .sch.id (School), .or.id (Organization), .desa.id (Village)
+- **Top Injector Domains** — most active slot gambling domains used to inject Indonesian websites (100% from SerpAPI dorking)
+- **Sector Distribution** — Pie/Bar chart showing which sectors are most targeted
+- **VirusTotal + AbuseIPDB** lookup links for every injector domain
+- **Stats**: Total Infected, Active Infections, Cleaned, Worst Sector
+- **Source**: SerpAPI (100 free searches/month) · Falls back to cached data
 
 ### Incident Feed
 - **530+ Indonesian cyber incidents** seeded historically (90 days)
@@ -93,11 +111,12 @@ The index is a **weighted multi-factor model** outputting 0–100:
 
 | Factor | Weight | Data Source | Description |
 |--------|--------|-------------|-------------|
-| **Incident Velocity** | 33% | SQLite DB (crowdsourced + OSINT) | Current week incidents vs 90-day baseline |
-| **KEV Velocity** | 27% | CISA KEV via KEVin API | New exploits added this week vs historical average |
-| **Shodan Exposure** | 20% | Shodan API | Infrastructure exposure count in Indonesia |
-| **CVSS Severity** | 15% | CISA KEV | Average CVSS score of recent KEVs |
+| **Incident Velocity** | 28% | SQLite DB (crowdsourced + OSINT) | Current week incidents vs 90-day baseline |
+| **KEV Velocity** | 22% | CISA KEV via KEVin API | New exploits added this week vs historical average |
+| **Shodan Exposure** | 18% | Shodan API | Infrastructure exposure count in Indonesia |
+| **CVSS Severity** | 12% | CISA KEV | Average CVSS score of recent KEVs |
 | **News Threat** | 5% | The Hacker News RSS | Threat keyword density in cyber news |
+| **Gambling Injection** | 15% | SerpAPI Google Dorking | Active gambling injector domains targeting Indonesian websites |
 
 ### Index Formula
 ```
@@ -240,6 +259,7 @@ cyberflation/
 | **Krebs on Security** | RSS feed | Global cyber news | 30-min cache |
 | **Dark Reading** | RSS feed | Global cyber news | 30-min cache |
 | **BleepingComputer** | RSS feed | Global cyber news | 30-min cache |
+| **SerpAPI** | Google Dorking | Indonesia sector queries | 100 searches/month |
 | **Crowdsourced Incidents** | SQLite DB | Indonesia-focused | On-submission |
 
 ---
