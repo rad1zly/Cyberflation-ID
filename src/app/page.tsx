@@ -10,9 +10,10 @@ import ReportForm from '@/components/ReportForm';
 import Forecast from '@/components/Forecast';
 import Sectors from '@/components/Sectors';
 import News from '@/components/News';
+import GamblingExploits from '@/components/GamblingExploits';
 import { AI_SUGGESTIONS } from '@/lib/mockData';
 
-export type View = 'dashboard' | 'analyst' | 'incidents' | 'report' | 'forecast' | 'sectors' | 'news';
+export type View = 'dashboard' | 'analyst' | 'incidents' | 'report' | 'forecast' | 'sectors' | 'news' | 'gambling';
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<View>('dashboard');
@@ -34,6 +35,7 @@ export default function Home() {
       case 'forecast': return <Forecast />;
       case 'sectors': return <Sectors />;
       case 'news': return <News />;
+      case 'gambling': return <GamblingExploits />;
       default: return <Dashboard onNavigate={setCurrentView} />;
     }
   };

@@ -13,6 +13,7 @@ const VIEW_TITLES: Record<View, string> = {
   forecast: 'Cyber Inflation Forecast',
   sectors: 'Sector Analysis',
   news: 'Cyber News',
+  gambling: 'Online Gambling Exploits',
 };
 
 const VIEW_SUBTITLES: Record<View, string> = {
@@ -23,6 +24,7 @@ const VIEW_SUBTITLES: Record<View, string> = {
   forecast: '7-14 day predictive cyber inflation forecast',
   sectors: 'Sector-by-sector risk breakdown and analysis',
   news: 'Latest cybersecurity news from trusted sources',
+  gambling: 'OSINT dorking engine for gambling injection in Indonesian government & education websites',
 };
 
 interface AISuggestion {

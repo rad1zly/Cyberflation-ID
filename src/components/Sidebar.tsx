@@ -12,6 +12,7 @@ import {
   Shield,
   Radio,
   Globe,
+  ShieldAlert,
   Rss,
   ChevronLeft,
   ChevronRight,
@@ -30,6 +31,7 @@ const navItems: { id: View; label: string; icon: React.ElementType; badge?: stri
   { id: 'sectors', label: 'Sectors', icon: Building2 },
   { id: 'forecast', label: 'Forecast', icon: TrendingUp },
   { id: 'news', label: 'Cyber News', icon: Rss },
+  { id: 'gambling', label: 'Online Gambling', icon: ShieldAlert },
   { id: 'report', label: 'Submit Report', icon: FileText },
 ];
 
