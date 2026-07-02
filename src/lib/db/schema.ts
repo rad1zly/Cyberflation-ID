@@ -29,3 +29,12 @@ export const kevCache = sqliteTable('kev_cache', {
   attackVector: text('attack_vector'),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 });
+
+export const shodanScans = sqliteTable('shodan_scans', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  query: text('query').notNull(),
+  service: text('service').notNull(),
+  count: integer('count').notNull(),
+  riskLevel: text('risk_level').notNull(), // critical | high | medium | low
+  scannedAt: integer('scanned_at', { mode: 'timestamp' }).notNull(),
+});

@@ -1,6 +1,9 @@
 // Shodan API integration with aggressive caching
 // Plan: 100 query credits/month → cache 1 hour minimum
 
+import path from 'path';
+import Database from 'better-sqlite3';
+
 const SHODAN_KEY = process.env.SHODAN_API_KEY || '';
 const SHODAN_BASE = 'https://api.shodan.io/shodan';
 
@@ -139,5 +142,22 @@ export async function getShodanRiskScore(): Promise<ShodanRiskScore> {
 
   // Cache for 1 hour
   setCache(cacheKey, score, 3600000);
+
+  // Persist to database
+  try {
+    const dbPath = path.join(process.cwd(), 'cyberflation.db');
+    const db = new Database(dbPath, { readonly: false });
+    const now = new Date();
+    const insert = db.prepare(
+      'INSERT INTO shodan_scans (query, service, count, risk_level, scanned_at) VALUES (?, ?, ?, ?, ?)'
+    );
+    for (const r of results) {
+      insert.run(r.query, r.label, r.count, r.risk, now.getTime());
+    }
+    db.close();
+  } catch (e) {
+    console.warn('Failed to persist Shodan results to DB:', e);
+  }
+
   return score;
 }

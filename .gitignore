@@ -35,3 +35,5 @@ build/
 # Credentials (never commit)
 *.pem
 *.key
+scripts/*.js
+scripts/*.ts

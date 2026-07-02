@@ -44,4 +44,15 @@ sqlite.exec(`
   CREATE INDEX IF NOT EXISTS idx_incidents_type ON incidents(type);
   CREATE INDEX IF NOT EXISTS idx_incidents_severity ON incidents(severity);
   CREATE INDEX IF NOT EXISTS idx_incidents_timestamp ON incidents(timestamp DESC);
+
+  CREATE TABLE IF NOT EXISTS shodan_scans (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    query TEXT NOT NULL,
+    service TEXT NOT NULL,
+    count INTEGER NOT NULL,
+    risk_level TEXT NOT NULL,
+    scanned_at INTEGER NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_shodan_scans_scanned ON shodan_scans(scanned_at DESC);
 `);
