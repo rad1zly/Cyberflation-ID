@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY || '';
-const MINIMAX_BASE_URL = process.env.MINIMAX_BASE_URL || 'https://api.minimax.io/v1';
+const FIREWORKS_API_KEY = process.env.FIREWORKS_API_KEY || '';
+const FIREWORKS_BASE_URL = process.env.FIREWORKS_BASE_URL || 'https://api.fireworks.ai/inference/v1';
 
 const SYSTEM_PROMPT = `You are the AI Analyst for Cyberflation.ID platform — early warning system for cyber risk pressure in Indonesia.
 
@@ -47,14 +47,14 @@ export async function POST(req: NextRequest) {
         content: m.content,
       }));
 
-    const response = await fetch(`${MINIMAX_BASE_URL}/chat/completions`, {
+    const response = await fetch(`${FIREWORKS_BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${MINIMAX_API_KEY}`,
+        'Authorization': `Bearer ${FIREWORKS_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'MiniMax-M2.7',
+        model: 'accounts/fireworks/models/deepseek-v4-pro',
         max_tokens: 1024,
         temperature: 0.3,
         messages: [

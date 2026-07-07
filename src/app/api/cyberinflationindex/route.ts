@@ -17,7 +17,7 @@ async function kevinFetch(path: string) {
   lastKEVCall = Date.now();
   const res = await fetch(`${KEVIN_BASE}${path}`, {
     headers: { 'User-Agent': 'Cyberflation.ID/1.0' },
-    next: { revalidate: 3600 },
+    signal: AbortSignal.timeout(15000),
   });
   if (!res.ok) throw new Error(`KEVin error: ${res.status}`);
   return res.json();
@@ -92,7 +92,7 @@ export async function GET() {
     try {
       const rssRes = await fetch('https://feeds.feedburner.com/TheHackersNews', {
         headers: { 'User-Agent': 'Cyberflation.ID/1.0' },
-        next: { revalidate: 1800 },
+        signal: AbortSignal.timeout(15000),
       });
       if (rssRes.ok) {
         const xml = await rssRes.text();

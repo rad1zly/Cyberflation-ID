@@ -220,10 +220,6 @@ Feel free to ask questions in English or Indonesian.`,
 
             </div>
           </div>
-          <button className="cyber-btn cyber-btn-ghost text-xs">
-            <Sparkles size={13} />
-            Upgrade
-          </button>
         </div>
 
         {/* Messages */}

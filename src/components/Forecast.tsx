@@ -18,6 +18,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   RefreshCw,
+  Sparkles,
 } from 'lucide-react';
 
 const RISK_LEVELS = [
@@ -92,6 +93,8 @@ export default function Forecast() {
   const [horizon, setHorizon] = useState(14);
   const [indexData, setIndexData] = useState<IndexData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [analysis, setAnalysis] = useState<string | null>(null);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
 
   useEffect(() => {
     fetch('/api/cyberinflationindex')
@@ -99,6 +102,23 @@ export default function Forecast() {
       .then(d => setIndexData(d))
       .finally(() => setLoading(false));
   }, []);
+
+  // Fetch LLM-generated forecast analysis whenever data or horizon changes
+  useEffect(() => {
+    if (!indexData) return;
+    setAnalysisLoading(true);
+    const forecast = generateForecast(currentIndex, horizon, acceleration);
+    fetch('/api/forecast-analysis', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ indexData, forecast, horizon }),
+    })
+      .then(r => r.json())
+      .then(d => setAnalysis(d.analysis || null))
+      .catch(() => setAnalysis(null))
+      .finally(() => setAnalysisLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [indexData?.index, horizon]);
 
   if (loading || !indexData) {
     return (
@@ -322,6 +342,38 @@ export default function Forecast() {
             <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Today</span>
           </div>
         </div>
+      </div>
+
+      {/* LLM Forecast Analysis */}
+      <div className="rounded-2xl p-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+        <div className="flex items-center gap-2 mb-3">
+          <Sparkles size={12} style={{ color: 'var(--accent-orange)' }} />
+          <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>
+            AI Forecast Analysis
+          </span>
+          {analysisLoading && <RefreshCw size={10} className="animate-spin" style={{ color: 'var(--text-muted)' }} />}
+        </div>
+        {analysisLoading ? (
+          <div className="text-xs italic py-4 text-center" style={{ color: 'var(--text-muted)' }}>
+            Generating AI forecast analysis...
+          </div>
+        ) : analysis ? (
+          <div className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+            {analysis.split('\n').map((line, i) => {
+              const trimmed = line.trim();
+              if (!trimmed) return <br key={i} />;
+              // Bold headings
+              if (trimmed.match(/^(Executive Summary|Key Drivers|Sector Spotlight|Recommended Actions|Confidence)/i)) {
+                return <p key={i} className="font-bold mt-2 mb-1" style={{ color: 'var(--text-primary)' }}>{trimmed}</p>;
+              }
+              return <p key={i}>{trimmed}</p>;
+            })}
+          </div>
+        ) : (
+          <div className="text-xs italic text-center py-4" style={{ color: 'var(--text-muted)' }}>
+            AI analysis unavailable — check Fireworks API configuration
+          </div>
+        )}
       </div>
 
       {/* Driver Analysis */}

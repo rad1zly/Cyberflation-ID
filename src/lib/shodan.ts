@@ -50,11 +50,11 @@ async function shodanCount(query: string): Promise<number> {
   const cached = getCached(cacheKey);
   if (cached !== null) return cached as number;
 
-  // Rate limit: 1 request/second for Shodan
-  await new Promise(r => setTimeout(r, 1100));
+  // Rate limit: 1 request/second for Shodan (reduced delay)
+  await new Promise(r => setTimeout(r, 500));
 
   const url = `${SHODAN_BASE}/host/count?key=${SHODAN_KEY}&query=${encodeURIComponent(query)}`;
-  const res = await fetch(url);
+  const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
   if (!res.ok) {
     console.error(`Shodan count error for "${query}": ${res.status}`);
     return 0;

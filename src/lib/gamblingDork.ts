@@ -179,7 +179,7 @@ async function runDorkQuery(apiKey: string, query: string): Promise<GamblingSite
   const url = buildSerpApiUrl(apiKey, query, 10);
   const res = await fetch(url, {
     headers: { 'Accept': 'application/json' },
-    next: { revalidate: 0 },
+    signal: AbortSignal.timeout(15000),
   });
 
   if (!res.ok) {
