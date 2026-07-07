@@ -7,22 +7,24 @@ export async function POST(req: NextRequest) {
   try {
     const { indexData, forecast, horizon } = await req.json();
 
-    // Build concise forecast summary for prompt
-    const currentIndex = indexData.index;
-    const incidentScore = indexData.components.incidentScore;
-    const kevScore = indexData.components.kevScore;
-    const shodanScore = indexData.components.shodanScore;
-    const avgCVSS = indexData.components.avgCVSS;
-    const gamblingScore = indexData.gambling.score;
-    const gamblingInfections = indexData.gambling.activeInfections;
+    // Build concise forecast summary for prompt — round all numbers to avoid float precision issues
+    const currentIndex = Math.round(indexData.index);
+    const incidentScore = Math.round(indexData.components.incidentScore);
+    const kevScore = Math.round(indexData.components.kevScore);
+    const shodanScore = Math.round(indexData.components.shodanScore);
+    const avgCVSS = Math.round(indexData.components.avgCVSS * 10) / 10;
+    const gamblingScore = Math.round(indexData.gambling.score);
+    const gamblingInfections = Math.round(indexData.gambling.activeInfections);
 
     // Extract forecast trajectory
     const predictedVals = forecast.filter((d: { predicted?: number }) => d.predicted !== undefined);
     const avgForecast = predictedVals.length > 0
       ? Math.round(predictedVals.reduce((s: number, d: { predicted: number }) => s + d.predicted, 0) / predictedVals.length)
       : currentIndex;
-    const endForecast = predictedVals[predictedVals.length - 1]?.predicted ?? currentIndex;
-    const trend = predictedVals.length >= 2 ? (endForecast - currentIndex) : 0;
+    const endForecast = predictedVals.length > 0
+      ? Math.round(predictedVals[predictedVals.length - 1].predicted!)
+      : currentIndex;
+    const trend = predictedVals.length >= 2 ? Math.round(endForecast - currentIndex) : 0;
 
     const systemPrompt = `You are the AI Forecast Analyst for Cyberflation.ID — Indonesia's cyber risk early warning platform.
 
