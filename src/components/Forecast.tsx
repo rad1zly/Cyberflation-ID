@@ -403,7 +403,7 @@ export default function Forecast() {
             {[
               { label: 'Incident Velocity', value: indexData.components.incidentScore, max: 100 },
               { label: 'KEV Exploits', value: indexData.components.kevScore, max: 100 },
-              { label: 'CVSS Severity', value: (indexData.components.avgCVSS / 10) * 100, max: 100 },
+              { label: 'CVSS Severity', value: Math.round(indexData.components.avgCVSS * 10), max: 100 },
               { label: 'Gambling Pressure', value: indexData.gambling.score, max: 100 },
             ].map(d => (
               <div key={d.label}>
