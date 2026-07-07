@@ -278,46 +278,31 @@ Feel free to ask questions in English or Indonesian.`,
                     className="text-xs leading-relaxed whitespace-pre-wrap"
                     style={{ color: msg.role === 'assistant' ? 'var(--text-primary)' : 'var(--text-primary)' }}
                   >
-                    {msg.content.split('\n').map((line, i) => {
-                      // Format markdown-like content
-                      if (line.startsWith('**') && line.endsWith('**')) {
-                        return (
-                          <p key={i} className="font-semibold mt-2 first:mt-0" style={{ color: 'var(--text-primary)' }}>
-                            {line.replace(/\*\*/g, '')}
-                          </p>
-                        );
+                    {msg.content.split('\n').reduce<React.ReactNode[]>((acc, line, i) => {
+                      const trimmed = line.trim();
+                      if (!trimmed) { acc.push(<br key={`br-${i}`} />); return acc; }
+                      // Inline bold: parse **bold** segments
+                      const parts = trimmed.split(/(\*\*[^*]+\*\*)/g);
+                      const rendered = parts.map((part, j) => {
+                        if (part.startsWith('**') && part.endsWith('**')) {
+                          return <strong key={j} className="font-bold" style={{ color: 'var(--text-primary)' }}>{part.slice(2, -2)}</strong>;
+                        }
+                        if (part.startsWith('*') && part.endsWith('*')) {
+                          return <em key={j}>{part.slice(1, -1)}</em>;
+                        }
+                        return <span key={j}>{part}</span>;
+                      });
+                      if (trimmed.startsWith('|')) {
+                        acc.push(<div key={`t-${i}`} className="font-mono text-[11px] my-1 overflow-x-auto" style={{ color: 'var(--text-secondary)' }}>{rendered}</div>);
+                      } else if (/^\d+\./.test(trimmed)) {
+                        acc.push(<p key={`n-${i}`} className="my-0.5" style={{ color: 'var(--text-secondary)' }}>{rendered}</p>);
+                      } else if (trimmed.startsWith('•') || trimmed.startsWith('-')) {
+                        acc.push(<p key={`b-${i}`} className="ml-2 my-0.5" style={{ color: 'var(--text-secondary)' }}>{rendered}</p>);
+                      } else {
+                        acc.push(<p key={`p-${i}`} className="my-0.5" style={{ color: 'var(--text-secondary)' }}>{rendered}</p>);
                       }
-                      if (line.startsWith('|')) {
-                        // Simple table formatting
-                        return (
-                          <div key={i} className="font-mono text-[11px] my-1 overflow-x-auto" style={{ color: 'var(--text-secondary)' }}>
-                            {line}
-                          </div>
-                        );
-                      }
-                      if (line.startsWith('•') || line.startsWith('-')) {
-                        return (
-                          <p key={i} className="ml-2 my-0.5" style={{ color: 'var(--text-secondary)' }}>
-                            {line}
-                          </p>
-                        );
-                      }
-                      if (line.match(/^\d+\./)) {
-                        return (
-                          <p key={i} className="my-0.5" style={{ color: 'var(--text-secondary)' }}>
-                            {line}
-                          </p>
-                        );
-                      }
-                      if (line.trim() === '') {
-                        return <br key={i} />;
-                      }
-                      return (
-                        <p key={i} className="my-0.5" style={{ color: 'var(--text-secondary)' }}>
-                          {line}
-                        </p>
-                      );
-                    })}
+                      return acc;
+                    }, [])}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mt-1.5 ml-1">
