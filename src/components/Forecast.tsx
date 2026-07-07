@@ -359,15 +359,28 @@ export default function Forecast() {
           </div>
         ) : analysis ? (
           <div className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            {analysis.split('\n').map((line, i) => {
+            {analysis.split('\n').reduce<React.ReactNode[]>((acc, line, i) => {
               const trimmed = line.trim();
-              if (!trimmed) return <br key={i} />;
-              // Bold headings
-              if (trimmed.match(/^(Executive Summary|Key Drivers|Sector Spotlight|Recommended Actions|Confidence)/i)) {
-                return <p key={i} className="font-bold mt-2 mb-1" style={{ color: 'var(--text-primary)' }}>{trimmed}</p>;
+              if (!trimmed) { acc.push(<br key={`br-${i}`} />); return acc; }
+              // Render inline: **bold**, *italic*, plain text
+              const parts = trimmed.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
+              const rendered = parts.map((part, j) => {
+                if (part.startsWith('**') && part.endsWith('**')) {
+                  return <strong key={j} style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{part.slice(2, -2)}</strong>;
+                }
+                if (part.startsWith('*') && part.endsWith('*')) {
+                  return <em key={j}>{part.slice(1, -1)}</em>;
+                }
+                return <span key={j}>{part}</span>;
+              });
+              // Section headings
+              if (/^(Executive Summary|Key Drivers|Sector Spotlight|Recommended Actions|Confidence|AI Forecast Analysis)/i.test(trimmed)) {
+                acc.push(<p key={`h-${i}`} className="font-bold mt-2 mb-1" style={{ color: 'var(--text-primary)', fontSize: '0.7rem' }}>{rendered}</p>);
+              } else {
+                acc.push(<p key={`p-${i}`} style={{ margin: '2px 0' }}>{rendered}</p>);
               }
-              return <p key={i}>{trimmed}</p>;
-            })}
+              return acc;
+            }, [])}
           </div>
         ) : (
           <div className="text-xs italic text-center py-4" style={{ color: 'var(--text-muted)' }}>
