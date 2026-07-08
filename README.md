@@ -54,7 +54,7 @@ Think of it like an **inflation index for cybersecurity threats** — when the i
 - Pagination (20 items/page)
 
 ### AI Analyst
-- Chat interface powered by **MiniMax M2.7**
+- Chat interface powered by **Fireworks AI (DeepSeek V4 Pro)**
 - Scope-guarded system prompt — only answers cyber risk / Indonesia cybersecurity topics
 - Can analyze incidents, KEVs, Shodan findings, and threat trends
 
@@ -97,7 +97,7 @@ Think of it like an **inflation index for cybersecurity threats** — when the i
   ┌──────────┼───────────────────────────────────────┐
   │          │                                       │
   ▼          ▼                                       ▼
-SQLite DB  KEVin API  Shodan API  MiniMax API  RSS Feeds
+SQLite DB  KEVin API  Shodan API  Fireworks AI  RSS Feeds
 (better-   (CISA KEV  (Infrastructure  (AI Chat)   (THN/Krebs/
  sqlite3)    Proxy)     Exposure)                DarkReading/
                                                      BleepingComputer)
@@ -144,7 +144,7 @@ Index = clamp(Raw × RansomwareModifier × SeverityWeight, 0, 100)
 | Framework | Next.js 16.2.10 (App Router) |
 | UI | React 19, TypeScript, Tailwind CSS |
 | Database | SQLite + better-sqlite3 + Drizzle ORM |
-| AI | MiniMax M2.7 (OpenAI-compatible API) |
+| AI | Fireworks AI (DeepSeek V4 Pro) (OpenAI-compatible API) |
 | Styling | CSS Variables (dark/light theme) |
 | XML Parsing | fast-xml-parser |
 | Charts | chart_template.py (matplotlib, OHLC) |
@@ -163,10 +163,10 @@ Index = clamp(Raw × RansomwareModifier × SeverityWeight, 0, 100)
 Create `.env.local` in the project root:
 
 ```env
-# MiniMax AI (OpenAI-compatible endpoint)
-MINIMAX_API_KEY=your_minimax_api_key
-MINIMAX_BASE_URL=https://api.minimax.io/v1
-MINIMAX_MODEL=MiniMax-M2.7
+# Fireworks AI (OpenAI-compatible endpoint)
+FIREWORKS_API_KEY=your_fireworks_api_key_here
+FIREWORKS_BASE_URL=https://api.fireworks.ai/v1
+FIREWORKS_MODEL=accounts/fireworks/models/deepseek-v4-pro
 
 # Shodan (infrastructure exposure scanning)
 SHODAN_API_KEY=your_shodan_api_key
@@ -217,7 +217,7 @@ cyberflation/
 └── src/
     ├── app/
     │   ├── api/
-    │   │   ├── chat/               # MiniMax AI chat endpoint
+    │   │   ├── chat/               # Fireworks AI chat endpoint
     │   │   ├── cyberinflationindex/ # Index computation engine
     │   │   ├── incidents/           # Paginated incident DB query
     │   │   ├── kevin/               # CISA KEV proxy endpoint
@@ -274,9 +274,9 @@ vercel --prod
 ```
 
 Set environment variables in Vercel dashboard:
-- `MINIMAX_API_KEY`
-- `MINIMAX_BASE_URL`
-- `MINIMAX_MODEL`
+- `FIREWORKS_API_KEY`
+- `FIREWORKS_BASE_URL`
+- `FIREWORKS_MODEL`
 - `SHODAN_API_KEY`
 - `KEVIN_API_BASE`
 - `NEXT_PUBLIC_BASE_URL`

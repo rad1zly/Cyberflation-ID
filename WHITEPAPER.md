@@ -202,7 +202,7 @@ Index = clamp(Raw × RansomwareModifier × SeverityWeight, 0, 100)
 │  /api/kevin              — CISA KEV proxy            │
 │  /api/news               — RSS + threat analysis      │
 │  /api/gambling           — SerpAPI dorking           │
-│  /api/chat               — MiniMax AI analyst       │
+│  /api/chat               — Fireworks AI analyst       │
 └──────────┬──────────┬──────────┬──────────┬───────────┘
            │          │          │          │
      ┌─────▼──┐ ┌────▼──┐ ┌────▼──┐ ┌────▼──────────┐
