@@ -9,7 +9,6 @@ import {
   FileText,
   TrendingUp,
   Building2,
-  Shield,
   Radio,
   Globe,
   ShieldAlert,
@@ -56,22 +55,19 @@ export default function Sidebar({ currentView, onNavigate, collapsed }: SidebarP
         style={{ borderColor: 'var(--border)' }}
       >
         {!collapsed && (
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--accent-green)' }}>
-              <Shield size={16} color="#0a0a0f" strokeWidth={2.5} />
-            </div>
-            <div>
-              <span className="text-sm font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                CYBERFLATION
-              </span>
-              <span className="text-xs font-medium ml-1" style={{ color: 'var(--accent-green)' }}>.ID</span>
-            </div>
-          </div>
+          <img
+            src="/logo.png"
+            alt="CYBERFLATION.ID"
+            className="h-10 w-auto object-contain"
+            style={{ filter: 'brightness(1.1)' }}
+          />
         )}
         {collapsed && (
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'var(--accent-green)' }}>
-            <Shield size={16} color="#0a0a0f" strokeWidth={2.5} />
-          </div>
+          <img
+            src="/logo.png"
+            alt="CYBERFLATION.ID"
+            className="w-10 h-10 object-contain rounded-lg"
+          />
         )}
       </div>
 
