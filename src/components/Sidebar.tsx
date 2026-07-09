@@ -40,9 +40,16 @@ export default function Sidebar({ currentView, onNavigate, collapsed, theme: the
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   useEffect(() => {
-    const saved = localStorage.getItem('cyberflation-theme') as 'dark' | 'light' | null;
-    const current = saved || document.documentElement.getAttribute('data-theme') as 'dark' | 'light' || 'dark';
-    setTheme(current);
+    const getTheme = (): 'dark' | 'light' => {
+      const saved = localStorage.getItem('cyberflation-theme') as 'dark' | 'light' | null;
+      return saved || (document.documentElement.getAttribute('data-theme') as 'dark' | 'light') || 'dark';
+    };
+    setTheme(getTheme());
+
+    // Watch for data-theme attribute changes (triggered by Header theme toggle)
+    const observer = new MutationObserver(() => setTheme(getTheme()));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => observer.disconnect();
   }, []);
 
   const activeTheme = themeProp || theme;
