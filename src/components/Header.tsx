@@ -126,13 +126,6 @@ export default function Header({
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Logo — top right, adapts to theme */}
-        <img
-          src={theme === 'dark' ? '/logo-dark.png' : '/logo.png'}
-          alt="CYBERFLATION.ID"
-          className="h-9 w-auto object-contain mr-2"
-        />
-
         {/* Search */}
         <form onSubmit={handleSubmit} className="relative hidden md:block">
           <Search
