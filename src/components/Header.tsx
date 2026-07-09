@@ -101,7 +101,7 @@ export default function Header({
     <header
       className="h-16 flex items-center justify-between px-6 border-b sticky top-0 z-40"
       style={{
-        background: 'rgba(10, 10, 15, 0.85)',
+        background: 'var(--bg-card)',
         backdropFilter: 'blur(12px)',
         borderColor: 'var(--border)',
       }}
