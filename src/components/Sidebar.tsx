@@ -74,14 +74,14 @@ export default function Sidebar({ currentView, onNavigate, collapsed, theme: the
       >
         {!collapsed && (
           <img
-            src={activeTheme === 'dark' ? '/logo-dark.png' : '/logo.png'}
+            src={activeTheme === 'dark' ? 'https://i.ibb.co.com/pjCXzPv1/Cyberflation-darkbaru.png' : '/logo.png'}
             alt="CYBERFLATION.ID"
             className="h-10 w-auto object-contain"
           />
         )}
         {collapsed && (
           <img
-            src={activeTheme === 'dark' ? '/logo-dark.png' : '/logo.png'}
+            src={activeTheme === 'dark' ? 'https://i.ibb.co.com/pjCXzPv1/Cyberflation-darkbaru.png' : '/logo.png'}
             alt="CYBERFLATION.ID"
             className="w-10 h-10 object-contain rounded-lg"
           />
