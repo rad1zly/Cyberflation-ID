@@ -57,10 +57,9 @@ export default function Header({
 
   useEffect(() => {
     const saved = localStorage.getItem('cyberflation-theme') as 'dark' | 'light' | null;
-    if (saved) {
-      setTheme(saved);
-      document.documentElement.setAttribute('data-theme', saved);
-    }
+    const current = saved || document.documentElement.getAttribute('data-theme') as 'dark' | 'light' || 'dark';
+    setTheme(current);
+    document.documentElement.setAttribute('data-theme', current);
   }, []);
 
   const toggleTheme = () => {
@@ -127,9 +126,9 @@ export default function Header({
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Logo — top right */}
+        {/* Logo — top right, adapts to theme */}
         <img
-          src="/logo.png"
+          src={theme === 'dark' ? '/logo-dark.png' : '/logo.png'}
           alt="CYBERFLATION.ID"
           className="h-9 w-auto object-contain mr-2"
         />

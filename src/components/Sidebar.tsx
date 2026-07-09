@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import type { View } from '@/app/page';
 import {
@@ -21,6 +22,7 @@ interface SidebarProps {
   currentView: View;
   onNavigate: (view: View) => void;
   collapsed: boolean;
+  theme?: 'dark' | 'light';
 }
 
 const navItems: { id: View; label: string; icon: React.ElementType; badge?: string }[] = [
@@ -34,7 +36,16 @@ const navItems: { id: View; label: string; icon: React.ElementType; badge?: stri
   { id: 'report', label: 'Submit Report', icon: FileText },
 ];
 
-export default function Sidebar({ currentView, onNavigate, collapsed }: SidebarProps) {
+export default function Sidebar({ currentView, onNavigate, collapsed, theme: themeProp }: SidebarProps) {
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('cyberflation-theme') as 'dark' | 'light' | null;
+    const current = saved || document.documentElement.getAttribute('data-theme') as 'dark' | 'light' || 'dark';
+    setTheme(current);
+  }, []);
+
+  const activeTheme = themeProp || theme;
   return (
     <aside
       className={cn(
@@ -56,15 +67,14 @@ export default function Sidebar({ currentView, onNavigate, collapsed }: SidebarP
       >
         {!collapsed && (
           <img
-            src="/logo.png"
+            src={activeTheme === 'dark' ? '/logo-dark.png' : '/logo.png'}
             alt="CYBERFLATION.ID"
             className="h-10 w-auto object-contain"
-            style={{ filter: 'brightness(1.1)' }}
           />
         )}
         {collapsed && (
           <img
-            src="/logo.png"
+            src={activeTheme === 'dark' ? '/logo-dark.png' : '/logo.png'}
             alt="CYBERFLATION.ID"
             className="w-10 h-10 object-contain rounded-lg"
           />
