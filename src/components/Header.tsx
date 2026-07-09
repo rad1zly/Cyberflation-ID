@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Menu, Bell, Search, Shield, AlertTriangle, AlertCircle, Activity, Sun, Moon } from 'lucide-react';
+import { Menu, Bell, Search, AlertTriangle, AlertCircle, Activity, Sun, Moon } from 'lucide-react';
 import type { View } from '@/app/page';
 
 const VIEW_TITLES: Record<View, string> = {
@@ -127,6 +127,13 @@ export default function Header({
       </div>
 
       <div className="flex items-center gap-3">
+        {/* Logo — top right */}
+        <img
+          src="/logo.png"
+          alt="CYBERFLATION.ID"
+          className="h-9 w-auto object-contain mr-2"
+        />
+
         {/* Search */}
         <form onSubmit={handleSubmit} className="relative hidden md:block">
           <Search
